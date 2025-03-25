@@ -1,3 +1,5 @@
+# https://realpython.com/python-sockets/#echo-client-and-server
+
 import socket
 
 # Set up host IP and port

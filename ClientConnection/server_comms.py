@@ -8,4 +8,4 @@ PORT = 65432
 # Create a socket to connect to
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((IP, PORT))  # Connect to the established server
-    s.sendall(b"Adv1n Butt")
+    s.sendall(b"Adv1n Butt")  # Send some test data

@@ -48,16 +48,6 @@ class Ball:
 
     def assert_position(self, pos: tuple[int, int]):
         self.centre_coords = pos
-
-    def move(self):
-        # BOUNDARIES (FLOOR + CEILING)
-        if (self.centre_coords[1] + self.radius > DISPLAY_SIZE[1]) or (self.centre_coords[1] - self.radius < 0): self.y_direction*-1  #TODO: Doesnt work!
-
-        # MOVEMENT
-        # Only move if the flag is set to
-        if self.is_moving:
-            self.centre_coords[0] += (self.SPEED * self.x_direction)
-            self.centre_coords[1] += (self.SPEED * self.y_direction)
     
     def out(self, display):
         pygame.draw.circle(display, colours["white"], self.centre_coords, self.radius)

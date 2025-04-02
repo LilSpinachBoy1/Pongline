@@ -56,7 +56,7 @@ class Ball:
 # FUNCTION TO RUN GAME
 def game():
     # Set up online connection
-    IP = "127.0.0.1"
+    IP = "0.0.0.0"
     PORT = 64532
 
     # Connect to socket

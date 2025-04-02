@@ -69,7 +69,6 @@ while running:
             sys.exit()
 
     p_left.movement()
-    ball.move()
 
     # Rendering
     DISPLAY.fill(colours["black"])

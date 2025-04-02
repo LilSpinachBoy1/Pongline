@@ -6,33 +6,33 @@ import socket
 HOST = "127.0.0.1"
 PORT = 65432
 
+# Create function to pass data to the other client
+def send_to_oponent(conns: list, sender: int, data: bytes):
+    recipient = sender - 1  # Finds the index of the client to send to (clever, ikr)
+    rec_conn = conns[recipient]
+    rec_conn.sendall(data)
+
 # Set up a socket to use
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     try:
+        # --------- SERVER SETUP ---------
         s.bind((HOST, PORT))  # Bind the socket to the host and port
         s.listen()  # Listen for connections to the server
         print(f"LISTENING FOR CONNECTIONS ON {HOST, PORT}")
 
-        # -------- FIRST CONNECTION --------
-        conn1, addr1 = s.accept()  # Accept first connection
-        print(f"Connected to {str(addr1)}")
-        test_data = conn1.recv(1024)
-        if test_data.decode("utf-8") == "Adv1n Butt":
-            print("Test data successfully recieved from connection 1!")
-        else:
-            raise InterruptedError
+        # --------- CONNECTION SETUP ---------
+        NUMBER_OF_CONNECTIONS = 2
+        connections, addresses = [], []
+        for i in range(NUMBER_OF_CONNECTIONS):
+            conn, addr = s.accept()  # Store connection details in temp variables
+            connections.append(conn)  # Add connection to the connections list
+            addresses.append(addr)  # Repeat for the address of the connection
+            print(f"Connected to {str(addr)}")  # Output confirmation message
+            send_to_oponent(connections, 1, b"Hello first client!")
 
-        # -------- SECOND CONNECTION --------
-        conn2, addr2 = s.accept()
-        print(f"Connected to {str(addr2)}")
-        test_data = conn2.recv(1024)
-        if test_data.decode("utf-8") == "Adv1n Butt":
-            print("Test data successfully recieved from connection 2!")
-        else:
-            raise InterruptedError
-
+        send_to_oponent(connections, 0, b"Hello second client!")
 
     except KeyboardInterrupt:
         print("Closing server. Goodnight!")
-    except InterruptedError:
-        print("Issue connecting to client, goodnight...")
+
+print("End of file")

@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import sys
+import socket
 
 # Create Colour Pallette
 colours = {
@@ -43,8 +44,8 @@ class Ball:
         self.x_direction, self.y_direction = 1, 1
 
     def toggle_movement(self):
-        if self.is_moving == False: self.is_moving = True
-        elif self.is_moving == True: self.is_moving = False
+        if not self.is_moving: self.is_moving = True
+        elif self.is_moving: self.is_moving = False
 
     def assert_position(self, pos: tuple[int, int]):
         self.centre_coords = pos
@@ -52,28 +53,43 @@ class Ball:
     def out(self, display):
         pygame.draw.circle(display, colours["white"], self.centre_coords, self.radius)
 
-# Create game objects
-padding = 30
-p_left = Paddle(padding)
-p_right = Paddle(DISPLAY_SIZE[0] - (padding + PADDLE_WIDTH))
-ball = Ball()
-ball.toggle_movement()
+# FUNCTION TO RUN GAME
+def game():
+    # Set up online connection
+    IP = "127.0.0.1"
+    PORT = 64532
 
-# Create game loop
-running = True
-while running:
-    # Event loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    # Connect to socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((IP, PORT))  # Connect to the established server
+        data = s.recv(1024).decode("utf-8")
+        print(data)
 
-    p_left.movement()
+    # Create game objects
+    padding = 30
+    p_left = Paddle(padding)
+    p_right = Paddle(DISPLAY_SIZE[0] - (padding + PADDLE_WIDTH))
+    ball = Ball()
+    ball.toggle_movement()
 
-    # Rendering
-    DISPLAY.fill(colours["black"])
-    ball.out(DISPLAY)
-    p_left.out(DISPLAY)
-    p_right.out(DISPLAY)
-    pygame.display.flip()
-    pygame.time.Clock().tick(FPS)  # Tick to new frame after delta time has elapsed
+    # Create game loop
+    running = True
+    while running:
+        # Event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        p_left.movement()
+
+        # Rendering
+        DISPLAY.fill(colours["black"])
+        ball.out(DISPLAY)
+        p_left.out(DISPLAY)
+        p_right.out(DISPLAY)
+        pygame.display.flip()
+        pygame.time.Clock().tick(FPS)  # Tick to new frame after delta time has elapsed
+
+if __name__ == "__main__":
+    game()

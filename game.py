@@ -32,7 +32,7 @@ class Paddle:
             self.rect.move_ip(0, self.SPEED)
 
     def assert_position(self, y_pos: int):
-        self.rect.y = y_pos
+        self.rect = pygame.Rect.update(30, y_pos, PADDLE_WIDTH, PADDLE_HEIGHT)
 
     def out(self, display):
         pygame.draw.rect(display, self.colour, self.rect)
@@ -50,7 +50,7 @@ class Ball:
         if not self.is_moving: self.is_moving = True
         elif self.is_moving: self.is_moving = False
 
-    def assert_position(self, pos: tuple[int, int]):
+    def assert_position(self, pos: list[int, int]):
         self.centre_coords = pos
     
     def out(self, display):
@@ -65,15 +65,12 @@ def game():
     # Connect to socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((IP, PORT))  # Connect to the established server
-    data = s.recv(1024).decode("utf-8")
-    print(data)
 
     # Create game objects
     padding = 30
     p_left = Paddle(padding)
     p_right = Paddle(DISPLAY_SIZE[0] - (padding + PADDLE_WIDTH))
     ball = Ball()
-    ball.toggle_movement()
 
     # Create game loop
     running = True
@@ -85,7 +82,26 @@ def game():
                 pygame.quit()
                 sys.exit()
 
+        # COMMUNICATIONS
+        """
+            SEND/RECIEVE LOOP
+            First the client listens for:
+            1- The ball position
+            2- The enemy paddle position
+            Then the client sends
+            1- Their paddle position
+        """
+        # 1- Recieve and update ball position
+        ball_pos = s.recv(1024).decode("utf-8")
+        ball.assert_position(ball_pos)
+
+        # 2- Recieve and update the paddle position
+        enemy_paddle = s.recv(1024).decode("utf-8")
+        p_right.assert_position(enemy_paddle)
+
+        # 1- Update and send the paddle position
         p_left.movement()
+        s.sendall(p_left.rect.y.encode("utf-8"))
 
         # Rendering
         DISPLAY.fill(colours["black"])

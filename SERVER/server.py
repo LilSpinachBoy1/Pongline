@@ -30,9 +30,27 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(f"Connected to {str(addr)}")  # Output confirmation message
 
         # --------- GAME SETUP ---------
-        ball_pos = (450, 300)
-        p1_paddle_pos = 375
-        p2_paddle_pos = 375
+        ball_pos = [450, 300]
+        paddle_positions = [375, 375]
+
+        # --------- GAME LOOP ---------
+        game_active = True
+        while game_active:
+            """
+                SEND/RECIEVE LOOP:
+                For each client, the following is sent:
+                1- The Ball Position
+                2- The Opponent Paddle Position
+                Then the server listens for:
+                1- Player paddle position
+                Game data is now up to date!
+            """
+            # Iterate through connections
+            for conn_num, conn in enumerate(connections):
+                conn.sendall(ball_pos.encode("utf-8"))  # Send ball position
+                conn.sendall(paddle_positions[conn_num - 1].encode("utf-8"))  # Send position of enemy paddle
+
+                paddle_positions[conn_num] = conn.recv(1024)  # Recieve and update the paddle position
 
     except KeyboardInterrupt:
         print("Closing server. Goodnight!")

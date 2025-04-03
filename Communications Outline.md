@@ -15,3 +15,13 @@ The server should set up connections between the players, and process the ball m
 4. Client checks for paddle collisions, and reports them to the server
 5. Server resets ball when points are scored
 6. Server sends win message when game is won, and disconnects
+
+---
+## Message types
+
+- PADDLE_POS: A single y coordinate for the paddle
+- BALL_POS: A tuple containing the coordinates of the ball
+- PADDLE_COLLISION: A boolean flag checking if there is a collision with a paddle
+- OPPONENT_POS: A single y coordinate of where the oponent paddle should be
+- VICTORY: Indicates a player has won
+- LOSS: Indicates a player has lost

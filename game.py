@@ -78,6 +78,7 @@ def game():
         # Event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                s.close()
                 pygame.quit()
                 sys.exit()
 

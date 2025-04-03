@@ -3,7 +3,7 @@
 import socket
 
 # Set up host IP and port
-HOST = socket.gethostbyname(socket.gethostname())
+HOST = "127.0.0.1"
 PORT = 65432
 
 # Create function to pass data to the other client
@@ -28,9 +28,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             connections.append(conn)  # Add connection to the connections list
             addresses.append(addr)  # Repeat for the address of the connection
             print(f"Connected to {str(addr)}")  # Output confirmation message
-            send_to_oponent(connections, 1, b"Hello first client!")
-
-        send_to_oponent(connections, 0, b"Hello second client!")
 
     except KeyboardInterrupt:
         print("Closing server. Goodnight!")

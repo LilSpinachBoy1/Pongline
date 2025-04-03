@@ -29,6 +29,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             addresses.append(addr)  # Repeat for the address of the connection
             print(f"Connected to {str(addr)}")  # Output confirmation message
 
+        # --------- GAME SETUP ---------
+        ball_pos = (450, 300)
+        p1_paddle_pos = 375
+        p2_paddle_pos = 375
+
     except KeyboardInterrupt:
         print("Closing server. Goodnight!")
 

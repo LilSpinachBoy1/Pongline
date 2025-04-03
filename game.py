@@ -31,6 +31,9 @@ class Paddle:
         elif keys[K_s] and self.rect.bottom < DISPLAY_SIZE[1] - self.SPEED:
             self.rect.move_ip(0, self.SPEED)
 
+    def assert_position(self, y_pos: int):
+        self.rect.y = y_pos
+
     def out(self, display):
         pygame.draw.rect(display, self.colour, self.rect)
 

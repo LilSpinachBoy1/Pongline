@@ -56,14 +56,14 @@ class Ball:
 # FUNCTION TO RUN GAME
 def game():
     # Set up online connection
-    IP = "0.0.0.0"
-    PORT = 64532
+    IP = "127.0.0.1"
+    PORT = 65432
 
     # Connect to socket
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((IP, PORT))  # Connect to the established server
-        data = s.recv(1024).decode("utf-8")
-        print(data)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((IP, PORT))  # Connect to the established server
+    data = s.recv(1024).decode("utf-8")
+    print(data)
 
     # Create game objects
     padding = 30
@@ -90,6 +90,7 @@ def game():
         p_right.out(DISPLAY)
         pygame.display.flip()
         pygame.time.Clock().tick(FPS)  # Tick to new frame after delta time has elapsed
+    s.close()
 
 if __name__ == "__main__":
     game()

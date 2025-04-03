@@ -3,7 +3,7 @@
 import socket
 
 # Set up host IP and port
-HOST = "0.0.0.0"
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 65432
 
 # Create function to pass data to the other client

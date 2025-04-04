@@ -47,7 +47,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             """
             # Iterate through connections
             for conn_num, conn in enumerate(connections):
-                conn.sendall(ball_pos.encode("utf-8"))  # Send ball position
+                # Encode ball position
+                ball_pos_str = " ".join(list(map(lambda x: str(x), ball_pos)))
+                conn.sendall(ball_pos_str.encode("utf-8"))  # Send ball position
                 conn.sendall(paddle_positions[conn_num - 1].encode("utf-8"))  # Send position of enemy paddle
 
                 paddle_positions[conn_num] = conn.recv(1024)  # Recieve and update the paddle position

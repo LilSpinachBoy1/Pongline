@@ -17,6 +17,7 @@ FPS = 60
 
 # Create Paddle Class
 PADDLE_HEIGHT, PADDLE_WIDTH = 150, 25
+# TODO: Change to store coords as array and render at runtime
 class Paddle:
     def __init__(self, x_coord: int, colour: tuple = colours["white"]):
         mid = (DISPLAY_SIZE[1] / 2) - (PADDLE_HEIGHT / 2)
@@ -92,7 +93,8 @@ def game():
             1- Their paddle position
         """
         # 1- Recieve and update ball position
-        ball_pos = s.recv(1024).decode("utf-8")
+        ball_pos_str = s.recv(1024).decode("utf-8").split()  # Recieves, decodes, and then splits string into a list
+        ball_pos = list(map(lambda x: int(x), ball_pos_str))  # Converts the string to an integer array
         ball.assert_position(ball_pos)
 
         # 2- Recieve and update the paddle position

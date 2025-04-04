@@ -49,10 +49,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             for conn_num, conn in enumerate(connections):
                 # Encode ball position
                 ball_pos_str = " ".join(list(map(lambda x: str(x), ball_pos)))
+                print(f"BALL_POS: Sending ball coords {ball_pos_str} to client {conn_num}.")
                 conn.sendall(ball_pos_str.encode("utf-8"))  # Send ball position
-                conn.sendall(paddle_positions[conn_num - 1].encode("utf-8"))  # Send position of enemy paddle
+                print(f"OPPONENT_POS: Sending paddle position {str(paddle_positions[conn_num - 1])} to client {conn_num}")
+                conn.sendall(str(paddle_positions[conn_num - 1]).encode("utf-8"))  # Send position of enemy paddle
 
-                paddle_positions[conn_num] = conn.recv(1024)  # Recieve and update the paddle position
+                paddle_positions[conn_num] = int(float(conn.recv(1024).decode("utf-8")))  # Recieve and update the paddle position
+                print(f"PADDLE_POS: Recieved paddle coordinate {paddle_positions[conn_num]} from client {conn_num}")
+                # Why int(float()) you may ask? Well this sends as 250.0, and python cant deal with the .0 sensibly
 
     except KeyboardInterrupt:
         print("Closing server. Goodnight!")

@@ -21,22 +21,23 @@ PADDLE_HEIGHT, PADDLE_WIDTH = 150, 25
 class Paddle:
     def __init__(self, x_coord: int, colour: tuple = colours["white"]):
         mid = (DISPLAY_SIZE[1] / 2) - (PADDLE_HEIGHT / 2)
-        self.rect = pygame.Rect(x_coord, mid, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.x, self.y = x_coord, mid
         self.colour = colour
         self.SPEED = 4
 
     def movement(self):
         keys = pygame.key.get_pressed()
-        if keys[K_w] and self.rect.y > self.SPEED:
-            self.rect.move_ip(0, -self.SPEED)
-        elif keys[K_s] and self.rect.bottom < DISPLAY_SIZE[1] - self.SPEED:
-            self.rect.move_ip(0, self.SPEED)
+        if keys[K_w] and self.y > self.SPEED:
+            self.y -= self.SPEED
+        elif keys[K_s] and self.y + PADDLE_HEIGHT < DISPLAY_SIZE[1] - self.SPEED:
+            self.y += self.SPEED
 
     def assert_position(self, y_pos: int):
-        self.rect = pygame.Rect.update(30, y_pos, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.y = y_pos
 
     def out(self, display):
-        pygame.draw.rect(display, self.colour, self.rect)
+        rect = pygame.Rect(self.x, self.y, PADDLE_WIDTH, PADDLE_HEIGHT)
+        pygame.draw.rect(display, self.colour, rect)
 
 # Create ball class
 class Ball:
@@ -94,16 +95,18 @@ def game():
         """
         # 1- Recieve and update ball position
         ball_pos_str = s.recv(1024).decode("utf-8").split()  # Recieves, decodes, and then splits string into a list
+        print(f"BALL_POS: Recieved ball coordinates {ball_pos_str} from the server")
         ball_pos = list(map(lambda x: int(x), ball_pos_str))  # Converts the string to an integer array
         ball.assert_position(ball_pos)
 
         # 2- Recieve and update the paddle position
-        enemy_paddle = s.recv(1024).decode("utf-8")
+        enemy_paddle = int(s.recv(1024).decode("utf-8"))
+        print(f"OPPONENT_POS: Recieved paddle coordinate {str(enemy_paddle)} from server")
         p_right.assert_position(enemy_paddle)
 
         # 1- Update and send the paddle position
         p_left.movement()
-        s.sendall(p_left.rect.y.encode("utf-8"))
+        s.sendall(str(p_left.y).encode("utf-8"))
 
         # Rendering
         DISPLAY.fill(colours["black"])
